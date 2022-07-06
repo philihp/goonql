@@ -6,6 +6,7 @@ import path from "path";
 
 const typeDefs = gql`
   type Query {
+    types: [Type!]!
     type(id: ID!): Type!
   }
 
@@ -24,11 +25,14 @@ const types = yaml.load(
 
 const resolvers = {
   Query: {
-    type(_, { id }) {
+    type: (_, { id }) => {
       return {
         id,
         name: types[id].name.en,
       };
+    },
+    types: () => {
+      return Object.keys(types).map((id) => ({ id, name: types[id].name.en }));
     },
   },
 };

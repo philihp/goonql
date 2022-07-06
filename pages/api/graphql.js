@@ -1,5 +1,8 @@
 import { createServer } from "@graphql-yoga/node";
 import { gql } from "graphql-tag";
+import yaml from "js-yaml";
+import fs from "fs";
+import path from "path";
 
 const typeDefs = gql`
   type Query {
@@ -12,13 +15,12 @@ const typeDefs = gql`
   }
 `;
 
-const types = {
-  57487: {
-    name: {
-      en: "core",
-    },
-  },
-};
+const types = yaml.load(
+  fs.readFileSync(
+    path.join(process.cwd(), "public", "sde", "fsd", "typeIDs.yaml"),
+    "utf8"
+  )
+);
 
 const resolvers = {
   Query: {

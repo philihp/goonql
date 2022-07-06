@@ -1,18 +1,31 @@
 import { createServer } from "@graphql-yoga/node";
 
-const typeDefs = /* GraphQL */ `
+const typeDefs = gql`
   type Query {
-    users: [User!]!
+    type(id: ID!): Type!
   }
-  type User {
+
+  type Type {
+    id: ID!
     name: String
   }
 `;
 
+const types = {
+  57487: {
+    name: {
+      en: "core",
+    },
+  },
+};
+
 const resolvers = {
   Query: {
-    users(parent, args, context) {
-      return [{ name: "Nextjs" }];
+    type(_, { id }) {
+      return {
+        id,
+        name: types[id].name.en,
+      };
     },
   },
 };

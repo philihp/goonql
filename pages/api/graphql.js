@@ -1,4 +1,5 @@
 import { createServer } from "@graphql-yoga/node";
+import { gql } from "graphql-tag";
 
 const typeDefs = gql`
   type Query {

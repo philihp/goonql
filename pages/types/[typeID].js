@@ -65,7 +65,7 @@ const TypeByID = () => {
           Used in
         </Type>
       ))}
-      {manufacture?.products?.length > 1 && (
+      {manufacture?.products?.length > 0 && (
         <>
           <h3>Product</h3>
           {manufacture?.products.map(({ type: materialType, quantity }) => (
@@ -80,7 +80,7 @@ const TypeByID = () => {
           ))}
         </>
       )}
-      {manufacture?.materials?.length > 1 && (
+      {manufacture?.materials?.length > 0 && (
         <>
           <h3>Material</h3>
           {manufacture?.materials.map(({ type: materialType, quantity }) => (

@@ -8,7 +8,7 @@ const supabaseKey = process.env.SUPABASE_KEY
 const typeDefs = gql`
   type Query {
     type(typeID: ID!): Type
-    types(first: Int, after: ID): [Type]
+    types(first: Int, after: ID = "0"): [Type]
   }
 
   type Type {
@@ -16,7 +16,7 @@ const typeDefs = gql`
     typeName: String!
     manufacture: Activity
     builtBy: Type
-    usedIn(first: Int = 5, after: ID): [Type]
+    usedIn(first: Int = 10, after: ID = "0"): [Type]
   }
 
   type Activity {

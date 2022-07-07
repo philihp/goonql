@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "jest --watch",
+    "test:ci": "jest --ci"
   },
   "dependencies": {
     "@graphql-yoga/node": "2.11.2",
@@ -24,6 +26,7 @@
     "eslint": "8.19.0",
     "eslint-config-next": "12.2.0",
     "husky": "8.0.1",
+    "jest": "^28.1.2",
     "lint-staged": "13.0.3"
   },
   "eslintConfig": {

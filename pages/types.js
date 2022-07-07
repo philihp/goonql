@@ -1,5 +1,6 @@
-import useSWR from "swr";
-import { gql } from "graphql-tag";
+import React from 'react'
+import useSWR from 'swr'
+import { gql } from 'graphql-tag'
 
 const query = gql`
   {
@@ -8,26 +9,26 @@ const query = gql`
       name
     }
   }
-`;
+`
 
 const fetcher = (query) =>
-  fetch("/api/graphql", {
-    method: "POST",
+  fetch('/api/graphql', {
+    method: 'POST',
     headers: {
-      "Content-type": "application/json",
+      'Content-type': 'application/json',
     },
     body: JSON.stringify({ query }),
   })
     .then((res) => res.json())
-    .then((json) => json.data);
+    .then((json) => json.data)
 
-export default function Index() {
-  const { data, error } = useSWR(query, fetcher);
+const Types = () => {
+  const { data, error } = useSWR(query, fetcher)
 
-  if (error) return <div>Failed to load</div>;
-  if (!data) return <div>Loading...</div>;
+  if (error) return <div>Failed to load</div>
+  if (!data) return <div>Loading...</div>
 
-  const { types } = data;
+  const { types } = data
 
   return (
     <div>
@@ -37,5 +38,7 @@ export default function Index() {
         </div>
       ))}
     </div>
-  );
+  )
 }
+
+export default Types

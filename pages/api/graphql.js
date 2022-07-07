@@ -8,7 +8,7 @@ const supabaseKey = process.env.SUPABASE_KEY
 const typeDefs = gql`
   type Query {
     type(typeID: ID!): Type
-    types(first: Int, after: ID = "0"): [Type]
+    types(first: Int = 99, after: ID = "0"): [Type]
   }
 
   type Type {

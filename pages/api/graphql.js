@@ -8,14 +8,15 @@ const supabaseKey = process.env.SUPABASE_KEY
 const typeDefs = gql`
   type Query {
     type(typeID: ID!): Type
+    types(first: Int, after: ID): [Type]
   }
 
   type Type {
     typeID: ID
     typeName: String!
     manufacture: Activity
-    built_by_blueprint: [Type]
-    used_in_blueprint: [Type]
+    builtBy: Type
+    usedIn(first: Int = 5, after: ID): [Type]
   }
 
   type Activity {
@@ -32,39 +33,53 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     type: async (_, { typeID }, { dataSource }) => {
-      const {
-        data: [record],
-      } = await dataSource
+      const { data } = await dataSource
         .from('invTypes')
         .select('typeID')
         .eq('typeID', typeID)
+        .limit(1)
+        .single()
+      return data
+    },
+    types: async (_, { first, after }, { dataSource }) => {
+      const { data: record } = await dataSource
+        .from('invTypes')
+        .select('typeID')
+        .limit(first)
+        .gt('typeID', after)
       return record
     },
   },
   Type: {
-    built_by_blueprint: async ({ typeID }, _args, { dataSource }) => {
+    builtBy: async ({ typeID }, _, { dataSource }) => {
       const { data } = await dataSource
         .from('industryActivityProducts')
-        .select('typeID, quantity')
+        .select('typeID')
         .eq('activityID', 1)
         .eq('productTypeID', typeID)
-      return data.map(({ typeID }) => ({ typeID }))
+        .limit(1)
+        .single()
+      return data
     },
-    used_in_blueprint: async ({ typeID }, _args, { dataSource }) => {
+    usedIn: async ({ typeID }, { first, after }, { dataSource }) => {
       const { data } = await dataSource
         .from('industryActivityMaterials')
-        .select('typeID, quantity')
+        .select('typeID')
         .eq('activityID', 1)
         .eq('materialTypeID', typeID)
+        .gt('typeID', after)
+        .limit(first)
       return data.map(({ typeID }) => ({ typeID }))
     },
-    typeName: async ({ typeID }, _args, { dataSource }) => {
+    typeName: async ({ typeID }, _, { dataSource }) => {
       const {
-        data: [{ typeName }],
+        data: { typeName },
       } = await dataSource
         .from('invTypes')
         .select('typeName')
         .eq('typeID', typeID)
+        .limit(1)
+        .single()
       return typeName
     },
     manufacture: (parent) => {
@@ -72,7 +87,7 @@ const resolvers = {
     },
   },
   Activity: {
-    materials: async ({ typeID }, _args, { dataSource }) => {
+    materials: async ({ typeID }, _, { dataSource }) => {
       const { data } = await dataSource
         .from('industryActivityMaterials')
         .select('materialTypeID, quantity')
@@ -85,7 +100,7 @@ const resolvers = {
         quantity,
       }))
     },
-    products: async ({ typeID }, args, { dataSource }) => {
+    products: async ({ typeID }, _, { dataSource }) => {
       const { data } = await dataSource
         .from('industryActivityProducts')
         .select('productTypeID, quantity')

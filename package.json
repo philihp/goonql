@@ -33,7 +33,10 @@
     "extends": [
       "next/core-web-vitals",
       "@philihp"
-    ]
+    ],
+    "rules": {
+      "react/prop-types": "off"
+    }
   },
   "lint-staged": {
     "**/*.{js,jsx,json}": [

@@ -8,7 +8,7 @@ const supabaseKey = process.env.SUPABASE_KEY
 const typeDefs = gql`
   type Query {
     type(typeID: ID!): Type
-    types(first: Int = 99, after: ID = "0"): [Type]
+    types(first: Int = 1000, after: ID = "0"): [Type]
   }
 
   type Type {
@@ -16,7 +16,7 @@ const typeDefs = gql`
     typeName: String!
     manufacture: Activity
     builtBy: Type
-    usedIn(first: Int = 10, after: ID = "0"): [Type]
+    usedIn(first: Int = 5, after: ID = "0"): [Type]
   }
 
   type Activity {
@@ -35,22 +35,32 @@ const resolvers = {
     type: async (_, { typeID }, { dataSource }) => {
       const { data } = await dataSource
         .from('invTypes')
-        .select('typeID')
+        .select('typeID, typeName')
         .eq('typeID', typeID)
         .limit(1)
         .single()
       return data
     },
     types: async (_, { first, after }, { dataSource }) => {
-      const { data: record } = await dataSource
+      const { data: records } = await dataSource
         .from('invTypes')
-        .select('typeID')
+        .select('typeID, typeName')
         .limit(first)
         .gt('typeID', after)
-      return record
+      return records
     },
   },
   Type: {
+    typeName: async ({ typeID, typeName }, _, { dataSource }) => {
+      if (typeName) return typeName
+      const { data } = await dataSource
+        .from('invTypes')
+        .select('typeName')
+        .eq('typeID', typeID)
+        .limit(1)
+        .single()
+      return data.typeName
+    },
     builtBy: async ({ typeID }, _, { dataSource }) => {
       const { data } = await dataSource
         .from('industryActivityProducts')
@@ -71,20 +81,7 @@ const resolvers = {
         .limit(first)
       return data.map(({ typeID }) => ({ typeID }))
     },
-    typeName: async ({ typeID }, _, { dataSource }) => {
-      const {
-        data: { typeName },
-      } = await dataSource
-        .from('invTypes')
-        .select('typeName')
-        .eq('typeID', typeID)
-        .limit(1)
-        .single()
-      return typeName
-    },
-    manufacture: (parent) => {
-      return parent
-    },
+    manufacture: (parent) => parent,
   },
   Activity: {
     materials: async ({ typeID }, _, { dataSource }) => {

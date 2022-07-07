@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@graphql-yoga/node": "2.11.2",
+    "@supabase/supabase-js": "1.35.4",
     "graphql": "16.5.0",
     "graphql-tag": "2.12.6",
-    "js-yaml": "4.1.0",
     "next": "12.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

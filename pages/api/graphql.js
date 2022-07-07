@@ -1,38 +1,109 @@
 import { createServer } from "@graphql-yoga/node";
 import { gql } from "graphql-tag";
-import yaml from "js-yaml";
-import fs from "fs";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 
 const typeDefs = gql`
   type Query {
-    types: [Type!]!
-    type(id: ID!): Type!
+    type(typeID: ID!): Type
   }
 
   type Type {
-    id: ID!
-    name: String
+    typeID: ID
+    typeName: String!
+    manufacture: Activity
+    built_by_blueprint: [Type]
+    used_in_blueprint: [Type]
+  }
+
+  type Activity {
+    materials: [Quantity]
+    products: [Quantity]
+  }
+
+  type Quantity {
+    type: Type
+    quantity: Int
   }
 `;
 
-const types = yaml.load(
-  fs.readFileSync(
-    path.join(process.cwd(), "public", "sde", "fsd", "typeIDs.yaml"),
-    "utf8"
-  )
-);
-
 const resolvers = {
   Query: {
-    type: (_, { id }) => {
-      return {
-        id,
-        name: types[id].name.en,
-      };
+    type: async (_, { typeID }, { dataSource }) => {
+      console.log("query.type");
+      const {
+        data: [record],
+      } = await dataSource
+        .from("invTypes")
+        .select("typeID")
+        .eq("typeID", typeID);
+      return record;
     },
-    types: () => {
-      return Object.keys(types).map((id) => ({ id, name: types[id].name.en }));
+  },
+  Type: {
+    built_by_blueprint: async ({ typeID }, _args, { dataSource }) => {
+      console.log("type.created_by_blueprint", typeID);
+      const { data } = await dataSource
+        .from("industryActivityProducts")
+        .select("typeID, quantity")
+        .eq("activityID", 1)
+        .eq("productTypeID", typeID);
+      return data.map(({ typeID }) => ({ typeID }));
+    },
+    used_in_blueprint: async ({ typeID }, _args, { dataSource }) => {
+      console.log("type.used_in_blueprint", typeID);
+      const { data } = await dataSource
+        .from("industryActivityMaterials")
+        .select("typeID, quantity")
+        .eq("activityID", 1)
+        .eq("materialTypeID", typeID);
+      return data.map(({ typeID }) => ({ typeID }));
+    },
+    typeName: async ({ typeID }, _args, { dataSource }) => {
+      console.log("type.typeName", typeID);
+      const {
+        data: [{ typeName }],
+      } = await dataSource
+        .from("invTypes")
+        .select("typeName")
+        .eq("typeID", typeID);
+      return typeName;
+    },
+    manufacture: (parent) => {
+      console.log("type.manufacture", parent);
+      return parent;
+    },
+  },
+  Activity: {
+    materials: async ({ typeID }, _args, { dataSource }) => {
+      console.log("activity.materials", typeID);
+      const { data } = await dataSource
+        .from("industryActivityMaterials")
+        .select("materialTypeID, quantity")
+        .eq("activityID", 1)
+        .eq("typeID", typeID);
+      return data.map(({ materialTypeID, quantity }) => ({
+        type: {
+          typeID: materialTypeID,
+        },
+        quantity,
+      }));
+    },
+    products: async ({ typeID }, args, { dataSource }) => {
+      console.log("activity.products", typeID);
+      const { data } = await dataSource
+        .from("industryActivityProducts")
+        .select("productTypeID, quantity")
+        .eq("activityID", 1)
+        .eq("typeID", typeID);
+      return data.map(({ productTypeID, quantity }) => ({
+        type: {
+          typeID: productTypeID,
+        },
+        quantity,
+      }));
     },
   },
 };
@@ -43,7 +114,9 @@ const server = createServer({
     resolvers,
   },
   endpoint: "/api/graphql",
-  // graphiql: false // uncomment to disable GraphiQL
+  context: () => ({
+    dataSource: createClient(supabaseUrl, supabaseKey),
+  }),
 });
 
 export default server;

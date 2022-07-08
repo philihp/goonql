@@ -106,7 +106,7 @@ const resolvers = {
         quantity: cost({ ...buildArgs, base: [quantity] })[0],
       }))
     },
-    products: async ({ typeID }, _, { dataSource }) => {
+    products: async ({ typeID, runs }, _, { dataSource }) => {
       const { data } = await dataSource
         .from('industryActivityProducts')
         .select('productTypeID, quantity')
@@ -116,7 +116,7 @@ const resolvers = {
         type: {
           typeID: productTypeID,
         },
-        quantity,
+        quantity: runs * quantity,
       }))
     },
   },

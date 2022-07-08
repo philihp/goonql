@@ -1,6 +1,7 @@
 import { createServer } from '@graphql-yoga/node'
 import { gql } from 'graphql-tag'
 import { createClient } from '@supabase/supabase-js'
+import { cost } from 'eve-industry'
 
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_KEY
@@ -14,7 +15,13 @@ const typeDefs = gql`
   type Type {
     typeID: ID
     typeName: String!
-    manufacture: Activity
+    manufacture(
+      runs: Int = 1
+      blueprint: Float = 0.0
+      rig: Float = 0.02
+      sec: Float = 2.1
+      structure: Float = 0.01
+    ): Activity
     builtBy: Type
     usedIn(first: Int = 5, after: ID = "0"): [Type]
   }
@@ -81,10 +88,12 @@ const resolvers = {
         .limit(first)
       return data.map(({ typeID }) => ({ typeID }))
     },
-    manufacture: (parent) => parent,
+    manufacture: ({ typeID }, args) => {
+      return { typeID, ...args }
+    },
   },
   Activity: {
-    materials: async ({ typeID }, _, { dataSource }) => {
+    materials: async ({ typeID, ...buildArgs }, _, { dataSource }) => {
       const { data } = await dataSource
         .from('industryActivityMaterials')
         .select('materialTypeID, quantity')
@@ -94,7 +103,7 @@ const resolvers = {
         type: {
           typeID: materialTypeID,
         },
-        quantity,
+        quantity: cost({ ...buildArgs, base: [quantity] })[0],
       }))
     },
     products: async ({ typeID }, _, { dataSource }) => {

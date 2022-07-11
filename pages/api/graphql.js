@@ -88,16 +88,23 @@ const resolvers = {
         .limit(first)
       return data.map(({ typeID }) => ({ typeID }))
     },
+    react: ({ typeID }, args) => {
+      return { typeID, activityID: 11, ...args }
+    },
     manufacture: ({ typeID }, args) => {
-      return { typeID, ...args }
+      return { typeID, activityID: 1, ...args }
     },
   },
   Activity: {
-    materials: async ({ typeID, ...buildArgs }, _, { dataSource }) => {
+    materials: async (
+      { typeID, activityID, ...buildArgs },
+      _,
+      { dataSource }
+    ) => {
       const { data } = await dataSource
         .from('industryActivityMaterials')
         .select('materialTypeID, quantity')
-        .eq('activityID', 1)
+        .eq('activityID', activityID)
         .eq('typeID', typeID)
       return data.map(({ materialTypeID, quantity }) => ({
         type: {
@@ -106,10 +113,11 @@ const resolvers = {
         quantity: cost({ ...buildArgs, base: [quantity] })[0],
       }))
     },
-    products: async ({ typeID, runs }, _, { dataSource }) => {
+    products: async ({ typeID, activityID, runs }, _, { dataSource }) => {
       const { data } = await dataSource
         .from('industryActivityProducts')
         .select('productTypeID, quantity')
+        .eq('activityID', activityID)
         .eq('activityID', 1)
         .eq('typeID', typeID)
       return data.map(({ productTypeID, quantity }) => ({

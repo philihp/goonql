@@ -79,7 +79,7 @@ const resolvers = {
       const { data } = await dataSource
         .from('industryActivityProducts')
         .select('typeID')
-        .eq('activityID', 1)
+        .in('activityID', [1, 11])
         .eq('productTypeID', typeID)
         .limit(1)
         .single()
@@ -89,7 +89,7 @@ const resolvers = {
       const { data } = await dataSource
         .from('industryActivityMaterials')
         .select('typeID')
-        .eq('activityID', 1)
+        .in('activityID', [1, 11])
         .eq('materialTypeID', typeID)
         .gt('typeID', after)
         .limit(first)

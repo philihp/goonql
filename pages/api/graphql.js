@@ -22,13 +22,7 @@ const typeDefs = gql`
       sec: Float = 2.1
       structure: Float = 0.01
     ): Activity
-    react(
-      runs: Int = 1
-      blueprint: Float = 0.0
-      rig: Float = 0.02
-      sec: Float = 2.1
-      structure: Float = 0.01
-    ): Activity
+    react(runs: Int = 1, rig: Float = 0.02): Activity
     builtBy: Type
     usedIn(first: Int = 5, after: ID = "0"): [Type]
   }

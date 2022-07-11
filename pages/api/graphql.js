@@ -125,7 +125,6 @@ const resolvers = {
         .from('industryActivityProducts')
         .select('productTypeID, quantity')
         .eq('activityID', activityID)
-        .eq('activityID', 1)
         .eq('typeID', typeID)
       return data.map(({ productTypeID, quantity }) => ({
         type: {

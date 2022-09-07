@@ -14,7 +14,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@graphql-yoga/node": "2.11.2",
+    "@graphql-yoga/node": "2.13.13",
     "@supabase/supabase-js": "1.35.6",
     "eve-industry": "0.0.1",
     "graphql": "16.6.0",

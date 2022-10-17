@@ -9,6 +9,7 @@ const supabaseKey = process.env.SUPABASE_KEY
 const typeDefs = gql`
   type Query {
     type(typeID: ID!): Type
+    typeWithName(typeName: String!): Type
     types(first: Int = 1000, after: ID = "0"): [Type]
   }
 
@@ -45,6 +46,15 @@ const resolvers = {
         .from('invTypes')
         .select('typeID, typeName')
         .eq('typeID', typeID)
+        .limit(1)
+        .single()
+      return data
+    },
+    typeWithName: async (_, { typeName }, { dataSource }) => {
+      const { data } = await dataSource
+        .from('invTypes')
+        .select('typeID', 'typeName')
+        .eq('typeName', typeName)
         .limit(1)
         .single()
       return data

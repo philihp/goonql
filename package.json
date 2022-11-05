@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@graphql-yoga/node": "2.13.13",
-    "@supabase/supabase-js": "2.0.4",
+    "@supabase/supabase-js": "2.0.5",
     "eve-industry": "0.0.1",
     "graphql": "16.6.0",
     "graphql-tag": "2.12.6",

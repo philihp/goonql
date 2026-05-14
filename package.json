@@ -1,54 +1,42 @@
 {
   "name": "goonql.philihp.com",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "prepare": "husky install",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:ci": "jest --ci",
-    "test:coverage": "jest --coverage"
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@graphql-yoga/node": "3.9.1",
-    "@supabase/supabase-js": "2.42.5",
-    "eve-industry": "0.0.1",
-    "graphql": "16.8.1",
-    "graphql-tag": "2.12.6",
-    "next": "13.3.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "swr": "2.2.5"
+    "@supabase/supabase-js": "^2.45.4",
+    "eve-industry": "^0.1.0",
+    "graphql": "^16.9.0",
+    "graphql-yoga": "^5.10.4",
+    "next": "^15.5.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
-    "@philihp/eslint-config": "6.1.0",
-    "eslint": "8.57.0",
-    "eslint-config-next": "13.3.1",
-    "husky": "8.0.3",
-    "jest": "29.7.0",
-    "lint-staged": "15.2.2"
-  },
-  "eslintConfig": {
-    "extends": [
-      "next/core-web-vitals",
-      "@philihp"
-    ],
-    "rules": {
-      "react/prop-types": "off"
-    }
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,json}": [
-      "eslint --fix"
-    ]
-  },
-  "prettier": {
-    "singleQuote": true,
-    "semi": false,
-    "trailingComma": "es5"
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@eslint/eslintrc": "^3.2.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.16.0",
+    "eslint-config-next": "^15.5.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
   }
 }

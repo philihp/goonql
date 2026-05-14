@@ -1,4 +1,4 @@
-import { createServer } from '@graphql-yoga/node'
+import { createYoga, createSchema } from 'graphql-yoga'
 import { gql } from 'graphql-tag'
 import { createClient } from '@supabase/supabase-js'
 import { cost } from 'eve-industry'
@@ -53,7 +53,7 @@ const resolvers = {
     typeWithName: async (_, { typeName }, { dataSource }) => {
       const { data } = await dataSource
         .from('invTypes')
-        .select('typeID', 'typeName')
+        .select('typeID, typeName')
         .eq('typeName', typeName)
         .limit(1)
         .single()
@@ -140,15 +140,16 @@ const resolvers = {
   },
 }
 
-const server = createServer({
-  schema: {
-    typeDefs,
-    resolvers,
+export const config = {
+  api: {
+    bodyParser: false,
   },
-  endpoint: '/api/graphql',
+}
+
+export default createYoga({
+  schema: createSchema({ typeDefs, resolvers }),
+  graphqlEndpoint: '/api/graphql',
   context: () => ({
     dataSource: createClient(supabaseUrl, supabaseKey),
   }),
 })
-
-export default server

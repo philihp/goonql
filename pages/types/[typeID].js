@@ -61,7 +61,7 @@ const TypeByID = () => {
         </Type>
       )}
       {usedIn.map(({ typeID, typeName }) => (
-        <Type typeID={typeID} typeName={typeName}>
+        <Type key={typeID} typeID={typeID} typeName={typeName}>
           Used in
         </Type>
       ))}
@@ -69,7 +69,7 @@ const TypeByID = () => {
         <>
           <h3>Product</h3>
           {manufacture?.products.map(({ type: materialType, quantity }) => (
-            <div>
+            <div key={materialType?.typeID}>
               <Type
                 typeID={materialType?.typeID}
                 typeName={materialType?.typeName}
@@ -84,7 +84,7 @@ const TypeByID = () => {
         <>
           <h3>Material</h3>
           {manufacture?.materials.map(({ type: materialType, quantity }) => (
-            <div>
+            <div key={materialType?.typeID}>
               <Type
                 typeID={materialType?.typeID}
                 typeName={materialType?.typeName}

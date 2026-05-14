@@ -19,7 +19,7 @@ const Types = () => {
   if (!data) return '...'
 
   return data.types.map(({ typeID, typeName }) => (
-    <Type typeID={typeID} typeName={typeName} />
+    <Type key={typeID} typeID={typeID} typeName={typeName} />
   ))
 }
 

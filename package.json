@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky install",
+    "prepare": "husky",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "jest --ci",
@@ -44,12 +44,6 @@
   "lint-staged": {
     "**/*.{js,jsx}": [
       "eslint --fix"
-    ]
-  },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/.next/"
     ]
   },
   "prettier": {

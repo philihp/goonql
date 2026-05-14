@@ -1,5 +1,3 @@
-'use client'
-
 import useSWR from 'swr'
 
 type QueryInput<TVariables> = {
@@ -29,5 +27,5 @@ const fetcher = async <TData, TVariables>({
 }
 
 export const useQuery = <TData, TVariables = Record<string, unknown>>(
-  input: QueryInput<TVariables>
+  input: QueryInput<TVariables> | null
 ) => useSWR<TData | undefined>(input, fetcher<TData, TVariables>)

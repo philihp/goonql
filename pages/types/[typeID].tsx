@@ -1,8 +1,6 @@
-'use client'
-
-import { use } from 'react'
-import { useQuery } from '../../../lib/useQuery'
-import { Type } from '../../../components/Type'
+import { useRouter } from 'next/router'
+import { useQuery } from '../../lib/useQuery'
+import { Type } from '../../components/Type'
 
 const query = /* GraphQL */ `
   query GetType($typeID: ID!) {
@@ -62,12 +60,14 @@ type TypeData = {
   }
 }
 
-const TypeByID = ({ params }: { params: Promise<{ typeID: string }> }) => {
-  const { typeID } = use(params)
-  const { data, error } = useQuery<TypeData, { typeID: string }>({
-    query,
-    variables: { typeID },
-  })
+const TypeByID = () => {
+  const router = useRouter()
+  const typeID = Array.isArray(router.query.typeID)
+    ? router.query.typeID[0]
+    : router.query.typeID
+  const { data, error } = useQuery<TypeData, { typeID: string }>(
+    typeID ? { query, variables: { typeID } } : null
+  )
 
   if (error) return <pre>{String(error)}</pre>
   if (!data) return <>...</>
@@ -94,7 +94,11 @@ const TypeByID = ({ params }: { params: Promise<{ typeID: string }> }) => {
         <>
           <h3>Product</h3>
           {manufacture?.products?.map(({ type, quantity }) => (
-            <Type key={type.typeID} typeID={type.typeID} typeName={type.typeName}>
+            <Type
+              key={type.typeID}
+              typeID={type.typeID}
+              typeName={type.typeName}
+            >
               {quantity}
             </Type>
           ))}
@@ -104,7 +108,11 @@ const TypeByID = ({ params }: { params: Promise<{ typeID: string }> }) => {
         <>
           <h3>Material</h3>
           {manufacture?.materials?.map(({ type, quantity }) => (
-            <Type key={type.typeID} typeID={type.typeID} typeName={type.typeName}>
+            <Type
+              key={type.typeID}
+              typeID={type.typeID}
+              typeName={type.typeName}
+            >
               {quantity}
             </Type>
           ))}

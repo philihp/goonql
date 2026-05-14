@@ -1,5 +1,3 @@
-'use client'
-
 import { useQuery } from '../../lib/useQuery'
 import { Type } from '../../components/Type'
 

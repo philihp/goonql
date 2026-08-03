@@ -23,14 +23,14 @@
     "graphql": "^16.9.0",
     "graphql-tag": "^2.12.6",
     "graphql-yoga": "^5.10.4",
-    "next": "^15.5.0",
+    "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "swr": "^2.2.5"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
-    "eslint-config-next": "^15.5.0",
+    "eslint-config-next": "^16.0.0",
     "husky": "^9.1.6",
     "jest": "^30.0.0",
     "lint-staged": "^17.0.0"
